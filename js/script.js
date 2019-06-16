@@ -4,7 +4,7 @@ $(document).ready(function() {
   $("#name").focus();
   $("input#other-title").hide();
   $("select#color").hide();
-
+  $("fieldset div p").hide();
 
   // takes 1 arg an object with 3 key/value pairs
   function showSelectedThemeColors(typeOfShirtsObject) {
@@ -137,6 +137,33 @@ $(document).ready(function() {
     }
 
   });
+
+//payment select option
+$("select#payment").on("change", function(event) {
+console.log(this.selectedIndex);
+  switch(this.selectedIndex) {
+    case 1:
+      $("fieldset div p").hide();
+      $("div#credit-card").show();
+     break;
+    case 2:
+      $("div#credit-card, fieldset div p:last").hide();
+      $("fieldset div p").eq(0).show();
+      break;
+    case 3:
+      $("div#credit-card, fieldset div p").hide();
+      $("fieldset div p").eq(1).show();
+
+}
+
+});
+
+
+
+
+
+
+
 
   //end of jquery closure
 });
