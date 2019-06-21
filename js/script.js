@@ -5,6 +5,8 @@ $(document).ready(function() {
   $("input#other-title").hide();
   $("select#color").hide();
   $("fieldset div p").hide();
+  $("p#select-activity").hide();
+  $("span#name_blank").hide();
 
   // takes 1 arg an object with 3 key/value pairs
   function showSelectedThemeColors(typeOfShirtsObject) {
@@ -140,8 +142,10 @@ $(document).ready(function() {
 
 //payment select option
 $("select#payment").on("change", function(event) {
-console.log(this.selectedIndex);
   switch(this.selectedIndex) {
+    case 0:
+      $("fieldset div p", "div#credit-card").hide();
+      break;
     case 1:
       $("fieldset div p").hide();
       $("div#credit-card").show();
@@ -153,16 +157,83 @@ console.log(this.selectedIndex);
     case 3:
       $("div#credit-card, fieldset div p").hide();
       $("fieldset div p").eq(1).show();
-
+      break;
 }
 
 });
 
 
+function checkCheckBox() {
+  const checkBoxes = $("input[type='checkbox']");
+  let isABoxChecked = false;
+  $("p#select-activity").show();
+  $.each(checkBoxes, function (index, checkbox) {
+       if(checkbox.checked) {
+         isABoxChecked = true;
+       }
+    });
+      isABoxChecked ? $("p#select-activity").hide():event.preventDefault();
+}
+
+
+function checkInputValues(inputToCheck, regrex, passAFunction) {
+
+   if(!regrex.test(inputToCheck.val())) {
+      event.preventDefault();
+      inputToCheck.addClass("validation-border");
+
+   } else {
+      inputToCheck.removeClass("validation-border");
+
+   }
+      passAFunction(regrex, inputToCheck);
+
+}
+
+//checks if name has input and not left blank; function has ability to
+function checkNameInput() {
+    if(!$("input#name").val().trim().length) {
+      $("span#name_error").text("Please enter your name").show();
+  } else {
+      $("span#name_error").hide();
+  }
+}
+
+
+function checkEmail(regrex, inputToCheck) {
+  if(!inputToCheck.val().trim().length) {
+    $("span#email_error").text("Cannot leave blank, please enter email");
+
+  } else if(!regrex.test(inputToCheck.val())) {
+      $("span#email_error").text("Cannot leave blank, please enter email");
+  }else {
+    $("span#email_error").hide();
+  }
+}
 
 
 
 
+//form submit
+$("button[type='submit']").on("click", function (event) {
+const emailRegrex = /^[a-zA-Z0-9]+@[a-zA-Z]+\.[a-zA-Z]{1,4}[\s]*$/;
+const creditRegrex =  /^\d{13,16}[\s]*$/;
+const zipRegrex = /^\d{5}[\s]*$/;
+const cvvRegrex = /^\d{3}[\s]*$/;
+const nameRegrex = /^[a-zA-Z]+[a-zA-Z\s]*$/;
+
+checkInputValues($("input#name"), nameRegrex, checkNameInput);
+checkInputValues($("input#mail"), emailRegrex, checkEmail);
+checkCheckBox();
+
+ if($("select#payment option:selected")[0].index === 1) {
+   // checkInputValues( $("input#cc-num"), creditRegrex);
+   // checkInputValues( $("input#cvv"), cvvRegrex);
+   // checkInputValues($("input#zip"), zipRegrex);
+ }
+  // checkNameInput();
+
+});
 
 
   //end of jquery closure

@@ -113,6 +113,10 @@ button:hover {
 	background: #184c62;
 }
 
+.message-red, p#select-activity{
+  color: red;
+}
+
 /* =================================
   Page Styles
 ==================================== */
@@ -136,9 +140,18 @@ button:hover {
 }
 
 /* =================================
+  Media Queries
+==================================== */
+.validation-border {
+  border: 1px solid red;
+}
+
+
+
+
+/* =================================
   Helper Classes
 ==================================== */
-
 .is-hidden {
 	display: none;
 }
