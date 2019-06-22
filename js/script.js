@@ -10,7 +10,7 @@ $(document).ready(function() {
 
 
   const regrex = {
-       email: /^[a-zA-Z0-9]+@[a-zA-Z]+\.[a-zA-Z]{1,4}[\s]*$/,
+       email: /^[a-zA-Z0-9]+@[a-zA-Z]+[\.][a-zA-Z]{3}$/,
        credit: /^\d{13,16}$/,
        zip: /^\d{5}[\s]*$/,
        cvv: /^\d{3}[\s]*$/,
@@ -264,6 +264,12 @@ event.preventDefault();
  }
 
 });
+
+$("input#name").keyup(()=> checkName(regrex,$("input#name").val()));
+$("input#mail").keyup(()=> checkEmail(regrex,$("input#mail").val()));
+$("input#cc-num").keyup(()=> checkCreditCard(regrex,$("input#cc-num").val()));
+$("input#zip").keyup(()=> checkZip(regrex,$("input#zip").val()));
+$("input#cvv").keyup(()=> checkCvv(regrex,$("input#cvv").val()));
 
   //end of jquery closure
 });
