@@ -11,7 +11,7 @@ $(document).ready(function() {
 
   const regrex = {
        email: /^[a-zA-Z0-9]+@[a-zA-Z]+\.[a-zA-Z]{1,4}[\s]*$/,
-       credit: /^\d{13,16}[\s]*$/,
+       credit: /^\d{13,16}$/,
        zip: /^\d{5}[\s]*$/,
        cvv: /^\d{3}[\s]*$/,
        name: /^[a-zA-Z]+[a-zA-Z\s]*$/,
@@ -188,9 +188,8 @@ function checkCheckBox() {
 
 
 function checkName(regrexObj, inputValue) {
-   $("span#name_error").show();
   if(regrexObj.name.test(inputValue)) {
-    $("span#name_error").hide();
+    $("span#name_error").empty();
   } else if(regrexObj.emptyString.test(inputValue)) {
     $("span#name_error").text("Please enter name")
   } else if(regrexObj.numbersLetters.test(inputValue)) {
@@ -200,9 +199,8 @@ function checkName(regrexObj, inputValue) {
 }
 
 function checkEmail(regrexObj, inputValue) {
-  $("span#email_error").show();
   if(regrexObj.email.test(inputValue)) {
-    $("span#email_error").hide();
+    $("span#email_error").empty();
   } else if(regrexObj.emptyString.test(inputValue)) {
     $("span#email_error").text("Please enter email");
   } else if(!regrexObj.email.test(inputValue)) {
@@ -212,42 +210,39 @@ function checkEmail(regrexObj, inputValue) {
 
 
 function checkCreditCard(regrexObj, inputValue) {
-  $("span#cc_error").show();
-  if(regrexObj.credit.test(inputValue)) {
-    $("span#cc_error").hide();
+    if(regrexObj.credit.test(inputValue)) {
+     $("span#cc_error").empty();
   } else if(regrexObj.emptyString.test(inputValue)) {
     $("span#cc_error").text("Enter credit number")
-  } else if(inputValue.trim().length < 13) {
-    $("span#cc_error").text("* min 13 digits");
-  } else if(inputValue.trim().length > 16) {
-   $("span#cc_error").text("* max 16 digits");
-  }
+  } else if(inputValue.length < 13) {
+    $("span#cc_error").text("*min 13 digits");
+  } else if(inputValue.length > 16) {
+   $("span#cc_error").text("*max 16 digits");
+ }
 }
 
 function checkZip(regrexObj, inputValue) {
-  $("span#zip_error").show();
+
   if(regrexObj.zip.test(inputValue)) {
-    $("span#zip_error").hide();
+    $("span#zip_error").empty();
   } else if(regrexObj.emptyString.test(inputValue)) {
     $("span#zip_error").text("*5 digits")
-  } else if(inputValue.trim().length < 5) {
+  } else if(inputValue.length < 5) {
     $("span#zip_error").text("*5 digits");
-  } else if(inputValue.trim().length > 5) {
+  } else if(inputValue.length > 5) {
    $("span#zip_error").text("*5 digits");
- } else {
-
  }
 }
 
 function checkCvv(regrexObj, inputValue) {
-  $("span#cc_error").show();
+  $("span#cvv_error").empty();
   if(regrexObj.cvv.test(inputValue)) {
     $("span#cvv_error").hide();
   } else if(regrexObj.emptyString.test(inputValue)) {
     $("span#cvv_error").text("*3 digits")
-  } else if(inputValue.trim().length < 3) {
+  } else if(inputValue.length < 3) {
     $("span#cvv_error").text("*3 digits");
-  } else if(inputValue.trim().length > 3) {
+  } else if(inputValue.length > 3) {
    $("span#cvv_error").text("*3 digits");
   }
 }
