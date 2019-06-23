@@ -6,11 +6,10 @@ $(document).ready(function() {
   $("select#color").hide();
   $("fieldset div p").hide();
   $("p#select-activity").hide();
-  $("span#name_blank").hide();
 
 
   const regrex = {
-       email: /^[a-zA-Z0-9]+@[a-zA-Z]+[\.][a-zA-Z]{3}$/,
+       email: /^[a-zA-Z0-9!#$%^&*()?_-]+@[a-zA-Z]+[\.][a-zA-Z]{3}$/,
        credit: /^\d{13,16}$/,
        zip: /^\d{5}[\s]*$/,
        cvv: /^\d{3}[\s]*$/,
@@ -81,8 +80,8 @@ $(document).ready(function() {
   $("select#title").on("change", function(event) {
     const otherInputElement = $("input#other-title");
     this.value == "other"
-      ? otherInputElement.slideDown()
-      : otherInputElement.slideUp();
+    ? otherInputElement.slideDown()
+    : otherInputElement.slideUp();
   });
 
 
@@ -110,7 +109,7 @@ $(document).ready(function() {
     if ($(event.target).prop("checked")) {
 
       const total = getCheckBoxActivityAmount(this);
-      calculateAcitivtyTotalAndUpdate(total);
+       calculateAcitivtyTotalAndUpdate(total);
 
       switch (theIndexOfWhatCheckBoxWasChecked) {
         case 1:
@@ -188,24 +187,30 @@ function checkCheckBox() {
 
 
 function checkName(regrexObj, inputValue) {
-  if(regrexObj.name.test(inputValue)) {
+  let preventDefault = true;
+  if(regrexObj.emptyString.test(inputValue)) {
+    $("span#name_error").text("Please enter name");
+  } else if(!regrexObj.name.test(inputValue)) {
+    $("span#name_error").text("Unless you are a droid..I highly doubt you have numbers in your name");
+  } else {
     $("span#name_error").empty();
-  } else if(regrexObj.emptyString.test(inputValue)) {
-    $("span#name_error").text("Please enter name")
-  } else if(regrexObj.numbersLetters.test(inputValue)) {
-    $("span#name_error").text("Unless you are a droid..I highly doubt you have numbers in your name")
+    preventDefault = false;
   }
-
+  preventDefault ? event.preventDefault() : null;
 }
 
 function checkEmail(regrexObj, inputValue) {
-  if(regrexObj.email.test(inputValue)) {
-    $("span#email_error").empty();
-  } else if(regrexObj.emptyString.test(inputValue)) {
+  let preventDefault = true;
+  if(regrexObj.emptyString.test(inputValue)) {
     $("span#email_error").text("Please enter email");
   } else if(!regrexObj.email.test(inputValue)) {
+    console.log("ran invalid email format");
     $("span#email_error").text("Invalid email format");
+  } else {
+    $("span#email_error").empty();
+    preventDefault = false;
   }
+  preventDefault ? event.preventDefault() : null;
 }
 
 
@@ -252,10 +257,8 @@ function checkCvv(regrexObj, inputValue) {
 $("button[type='submit']").on("click", function (event) {
 
 checkName(regrex, $("input#name").val());
-checkEmail(regrex, $("input#email").val());
+checkEmail(regrex, $("input#mail").val());
 checkCheckBox();
-
-event.preventDefault();
 
  if($("select#payment option:selected")[0].index === 1) {
  checkCreditCard(regrex, $("input#cc-num").val());
