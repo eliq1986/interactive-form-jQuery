@@ -108,10 +108,13 @@ button {
 	background: #22627e;
 	margin: 1.25em 0 .5em;
 	cursor: pointer;
+  transition: all 0.4s ease;
+
 }
 
 button:hover {
 	background: #184c62;
+  border-radius: 1em;
 }
 
 .message-red, p#select-activity{

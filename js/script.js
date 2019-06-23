@@ -157,35 +157,36 @@ $("select#payment").on("change", function(event) {
       $("fieldset div p", "div#credit-card").hide();
       break;
     case 1:
-      $("fieldset div p").hide();
-      $("div#credit-card").show();
+      $("fieldset div p").fadeOut(600);
+      $("div#credit-card").show(700);
      break;
     case 2:
-      $("div#credit-card, fieldset div p:last").hide();
+      $("div#credit-card, fieldset div p:last").slideUp();
       $("fieldset div p").eq(0).show();
       break;
     case 3:
-      $("div#credit-card, fieldset div p").hide();
-      $("fieldset div p").eq(1).show();
+      $("div#credit-card, fieldset div p").slideUp();
+      $("fieldset div p").eq(1).show(300);
       break;
 }
 
 });
 
-
+// takes no args; displays error message if no checkboxes are checked
 function checkCheckBox() {
   const checkBoxes = $("input[type='checkbox']");
   let isABoxChecked = false;
-  $("p#select-activity").show();
   $.each(checkBoxes, function (index, checkbox) {
        if(checkbox.checked) {
          isABoxChecked = true;
+       } else {
+         $("p#select-activity").show().text("Must check one box before submitting");
        }
     });
-      isABoxChecked ? $("p#select-activity").hide():event.preventDefault();
+      isABoxChecked ? $("p#select-activity").hide() : event.preventDefault();
 }
 
-
+// takes 2 arg; obj and input value. Displays error message if regrex is true
 function checkName(regrexObj, inputValue) {
   let preventDefault = true;
   if(regrexObj.emptyString.test(inputValue)) {
@@ -199,12 +200,12 @@ function checkName(regrexObj, inputValue) {
   preventDefault ? event.preventDefault() : null;
 }
 
+// takes 2 arg; obj and input value. Displays error message if regrex is true
 function checkEmail(regrexObj, inputValue) {
   let preventDefault = true;
   if(regrexObj.emptyString.test(inputValue)) {
     $("span#email_error").text("Please enter email");
   } else if(!regrexObj.email.test(inputValue)) {
-    console.log("ran invalid email format");
     $("span#email_error").text("Invalid email format");
   } else {
     $("span#email_error").empty();
@@ -213,43 +214,55 @@ function checkEmail(regrexObj, inputValue) {
   preventDefault ? event.preventDefault() : null;
 }
 
-
+//takes 2 arg; obj and input value. Displays error message if regrex is true
 function checkCreditCard(regrexObj, inputValue) {
-    if(regrexObj.credit.test(inputValue)) {
-     $("span#cc_error").empty();
-  } else if(regrexObj.emptyString.test(inputValue)) {
+   let preventDefault = true;
+
+    if(regrexObj.emptyString.test(inputValue)) {
     $("span#cc_error").text("Enter credit number")
   } else if(inputValue.length < 13) {
     $("span#cc_error").text("*min 13 digits");
   } else if(inputValue.length > 16) {
    $("span#cc_error").text("*max 16 digits");
+ } else {
+    $("span#cc_error").empty();
+    preventDefault = false;
  }
+    preventDefault ? event.preventDefault() : null;
 }
 
+//takes 2 arg; obj and input value. Displays error message if regrex is true
 function checkZip(regrexObj, inputValue) {
+  let preventDefault = true;
 
-  if(regrexObj.zip.test(inputValue)) {
-    $("span#zip_error").empty();
-  } else if(regrexObj.emptyString.test(inputValue)) {
+   if(regrexObj.emptyString.test(inputValue)) {
     $("span#zip_error").text("*5 digits")
   } else if(inputValue.length < 5) {
     $("span#zip_error").text("*5 digits");
   } else if(inputValue.length > 5) {
    $("span#zip_error").text("*5 digits");
+ } else {
+   $("span#zip_error").empty();
+   preventDefault = false;
  }
+  preventDefault ? event.preventDefault() : null;
 }
 
+//takes 2 arg; obj and input value. Displays error message if regrex is true
 function checkCvv(regrexObj, inputValue) {
-  $("span#cvv_error").empty();
-  if(regrexObj.cvv.test(inputValue)) {
-    $("span#cvv_error").hide();
-  } else if(regrexObj.emptyString.test(inputValue)) {
+  let preventDefault = true;
+
+    if(regrexObj.emptyString.test(inputValue)) {
     $("span#cvv_error").text("*3 digits")
   } else if(inputValue.length < 3) {
     $("span#cvv_error").text("*3 digits");
   } else if(inputValue.length > 3) {
    $("span#cvv_error").text("*3 digits");
-  }
+ } else {
+     $("span#cvv_error").hide();
+     preventDefault = false;
+ }
+    preventDefault ? event.preventDefault() : null;
 }
 
 
@@ -261,9 +274,11 @@ checkEmail(regrex, $("input#mail").val());
 checkCheckBox();
 
  if($("select#payment option:selected")[0].index === 1) {
+
  checkCreditCard(regrex, $("input#cc-num").val());
  checkZip(regrex, $("input#zip").val());
  checkCvv(regrex, $("input#cvv").val());
+
  }
 
 });
