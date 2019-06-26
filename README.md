@@ -8,6 +8,7 @@ Enhanced a interactive registration form for a fictional conference utilizing po
 - **Opera**
 - **Firefox**
 
+[DEMO](https://eliq1986.github.io/interactive-form-jQuery/)
 
 ## Skills Learned
 - Regrex
