@@ -216,40 +216,42 @@ function checkRegisterForActivities() {
          $("p#select-activity").show().text("Must check one box before submitting");
        }
     });
-       isABoxChecked ? $("p#select-activity").hide() : event.preventDefault();
+
+    if(isABoxChecked) {
+     $("p#select-activity").hide();
+    } else {
+      return false;
+    }
+
+
 }
 
 
 // takes 2 arg; string and input value. Displays error message if regrex is true
 function checkBasicInput(objectBracketString, inputValue) {
 
-  let preventDefault = true;
-
-  const obj = regrexObj[objectBracketString];
+  const inputObj = regrexObj[objectBracketString];
 
   if(regrexObj.emptyString.test(inputValue)) {
 
-    $(obj.selector).text(obj.emptyStringText);
+    $(inputObj.selector).text(inputObj.emptyStringText);
 
-  } else if(!obj.invalid.test(inputValue)) {
+  } else if(!inputObj.invalid.test(inputValue)) {
 
-    $(obj.selector).text(obj.invalidRegrex);
+    $(inputObj.selector).text(inputObj.invalidRegrex);
 
   } else {
 
-    $(obj.selector).empty();
+    $(inputObj.selector).empty();
 
-    preventDefault = false;
+    return true;
   }
-
-    preventDefault ? event.preventDefault() : null;
+    return false;
 }
 
 
 //takes 2 arg; obj and input value. Displays error message if regrex is true
 function checkCreditCard(string, inputValue) {
-
-   let preventDefault = true;
 
    const creditObj = regrexObj[string];
 
@@ -269,17 +271,15 @@ function checkCreditCard(string, inputValue) {
 
      $(creditObj.selector).empty();
 
-      preventDefault = false;
+     return true;
    }
 
-      preventDefault ? event.preventDefault() : null;
+    return false;
 }
 
 
 //takes 2 arg; obj and input value. Displays error message if regrex is true
 function checkZipAndCVV(string, inputValue) {
-
-  let preventDefault = true;
 
   const obj = regrexObj[string];
 
@@ -295,26 +295,33 @@ function checkZipAndCVV(string, inputValue) {
 
     $(obj.selector).empty();
 
-    preventDefault = false;
+    return true;
  }
 
-    preventDefault ? event.preventDefault() : null;
+    return false;
 
 }
 
 //form submit
 $("button[type='submit']").on("click", function (event) {
 
-  checkBasicInput("name", $("input#name").val());
-  checkBasicInput("email", $("input#mail").val());
-  checkRegisterForActivities();
+  const isNameValid = checkBasicInput("name", $("input#name").val());
+  const isEmailValid = checkBasicInput("email", $("input#mail").val());
+  const isABoxChecked = checkRegisterForActivities();
+
+  if(!isNameValid || !isEmailValid || isABoxChecked) {
+             event.preventDefault();
+  }
 
  if($("select#payment option:selected")[0].index === 1) {
 
-   checkCreditCard("credit", $("input#cc-num").val());
-   checkZipAndCVV("zipCode", $("input#zip").val());
-   checkZipAndCVV("cvv", $("input#cvv").val());
+   const isCreditValid = checkCreditCard("credit", $("input#cc-num").val());
+   const isZipValid = checkZipAndCVV("zipCode", $("input#zip").val());
+   const isCvvValid = checkZipAndCVV("cvv", $("input#cvv").val());
 
+      if(!isCreditValid || !isZipValid || !isCvvValid) {
+            event.preventDefault();
+      }
  }
 
 });
