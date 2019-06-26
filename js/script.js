@@ -7,7 +7,7 @@ $(document).ready(function() {
   $("fieldset div p").hide();
   $("p#select-activity").hide();
 
-
+//contains input selector,error messages and regrex
   const regrexObj = {
        email: {
         invalid: /^[a-zA-Z0-9!#$%^&*()?_-]+@[a-zA-Z]+[\.][a-zA-Z]{3}$/,
@@ -26,25 +26,28 @@ $(document).ready(function() {
        zipCode: {
          errorMessage: "*5 digits",
          selector: "span#zip_error",
-         requiredLength: 5
+         regrex: /^\d{5}$/
        },
        cvv: {
          errorMessage:"*3 digits",
          selector:"span#cvv_error",
-         requiredLength: 3
+         regrex: /^\d{3}$/
        },
        credit: {
          errorMessage: "Cannot leave blank",
          selector: "span#cc_error",
          minError: "*min 13 digits",
-         maxError: "*max 16 digits"
+         maxError: "*max 16 digits",
+         minLength: 13,
+         maxLength: 15
        },
-       invalidCharacter: "Digits only",
-       digitsOnly:  /^\d*$/,
+
+       digitsOnly: /^\d*$/,
+       invalidCharacterMessage: "Digits only",
        emptyString: /^$/
   }
 
-  // takes 1 arg an object with 3 key/value pairs
+  // takes 1 arg an object with 3 key/value pairs. Called on line 126
   function showSelectedThemeColors(typeOfShirtsObject) {
     if (typeOfShirtsObject.optionValue === 1) {
       typeOfShirtsObject.jsPunsShirts.show();
@@ -60,7 +63,7 @@ $(document).ready(function() {
 
   }
 
-// takes 2 arg; disables other activty that times overlap. Also darkens color.
+// takes 2 arg; disables other activty that times overlap. Also darkens color. Called on line 141-151
   function blockOtherActivityTimeSlot(isCheckedIndex, index) {
 
     $("input[type='checkbox']")
@@ -105,9 +108,7 @@ $(document).ready(function() {
   // Basic Info fieldset; Job role selection
   $("select#title").on("change", function(event) {
     const otherInputElement = $("input#other-title");
-    this.value == "other"
-    ? otherInputElement.slideDown()
-    : otherInputElement.slideUp();
+    this.value == "other" ? otherInputElement.slideDown(): otherInputElement.slideUp();
   });
 
 
@@ -200,12 +201,18 @@ $("select#payment").on("change", function(event) {
 
 // takes no args; displays error message if no checkboxes are checked
 function checkRegisterForActivities() {
+
   const checkBoxes = $("input[type='checkbox']");
+
   let isABoxChecked = false;
+
   $.each(checkBoxes, function (index, checkbox) {
        if(checkbox.checked) {
+
          isABoxChecked = true;
+
        } else {
+
          $("p#select-activity").show().text("Must check one box before submitting");
        }
     });
@@ -214,10 +221,11 @@ function checkRegisterForActivities() {
 
 
 // takes 2 arg; string and input value. Displays error message if regrex is true
-function checkBasicInput(nameOfObj, inputValue) {
+function checkBasicInput(objectBracketString, inputValue) {
+
   let preventDefault = true;
 
-  const obj = regrexObj[nameOfObj];
+  const obj = regrexObj[objectBracketString];
 
   if(regrexObj.emptyString.test(inputValue)) {
 
@@ -237,40 +245,62 @@ function checkBasicInput(nameOfObj, inputValue) {
     preventDefault ? event.preventDefault() : null;
 }
 
+
 //takes 2 arg; obj and input value. Displays error message if regrex is true
 function checkCreditCard(string, inputValue) {
+
    let preventDefault = true;
+
    const creditObj = regrexObj[string];
+
    if(!regrexObj.digitsOnly.test(inputValue)) {
-      $(creditObj.selector).text(regrexObj.invalidCharacter);
-   } else if(inputValue.length < 13 && inputValue.length !== 0) {
+
+      $(creditObj.selector).text(regrexObj.invalidCharacterMessage);
+
+   } else if(inputValue.length < creditObj.minLength) {
+
       $(creditObj.selector).text(creditObj.minError);
-   } else if (inputValue.length > 16) {
+
+   } else if (inputValue.length > creditObj.maxLength) {
+
       $(creditObj.selector).text(creditObj.maxError);
-   }else {
+
+   } else {
+
      $(creditObj.selector).empty();
+
       preventDefault = false;
    }
-    preventDefault ? event.preventDefault() : null;
+
+      preventDefault ? event.preventDefault() : null;
 }
+
 
 //takes 2 arg; obj and input value. Displays error message if regrex is true
 function checkZipAndCVV(string, inputValue) {
-  let preventDefault = true;
-  const obj = regrexObj[string];
-  if(!regrexObj.digitsOnly.test(inputValue)) {
-    $(obj.selector).text(regrexObj.invalidCharacter);
-  } else if(inputValue.length < obj.requiredLength && inputValue.length !== 0) {
-    $(obj.selector).text(obj.errorMessage);
-  } else if(inputValue.length > obj.requiredLength) {
-    $(obj.selector).text(obj.errorMessage);
-  }else {
-   $(obj.selector).empty();
-   preventDefault = false;
- }
-  preventDefault ? event.preventDefault() : null;
-}
 
+  let preventDefault = true;
+
+  const obj = regrexObj[string];
+
+  if(!regrexObj.digitsOnly.test(inputValue)) {
+
+    $(obj.selector).text(regrexObj.invalidCharacterMessage);
+
+  }  else if(!obj.regrex.test(inputValue)) {
+
+    $(obj.selector).text(obj.errorMessage);
+
+  }else {
+
+    $(obj.selector).empty();
+
+    preventDefault = false;
+ }
+
+    preventDefault ? event.preventDefault() : null;
+
+}
 
 //form submit
 $("button[type='submit']").on("click", function (event) {
