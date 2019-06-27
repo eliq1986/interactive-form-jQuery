@@ -10,18 +10,16 @@ $(document).ready(function() {
 //contains input selector,error messages and regrex
   const regrexObj = {
        email: {
-        invalid: /^[a-zA-Z0-9!#$%^&*()?_-]+@[a-zA-Z]+[\.][a-zA-Z]{3}$/,
         selector: "span#email_error",
         emptyStringText: "Please enter email",
-        invalidRegrex: "Invalid email format"
-
+        invalidRegrex: "Invalid email format",
+        regrex: /^[a-zA-Z0-9!#$%^&*()?_-]+@[a-zA-Z]+[\.][a-zA-Z]{3}$/
        },
        name: {
-         invalid: /^[a-zA-Z]+[a-zA-Z\s]*$/,
          selector: "span#name_error",
          emptyStringText: "Please enter your name",
-         invalidRegrex: "You're not the droid were looking for; numbers are invalid"
-
+         invalidRegrex: "You're not the droid were looking for; numbers are invalid",
+         regrex: /^[a-zA-Z]+[a-zA-Z\s]*$/,
        },
        zipCode: {
          errorMessage: "*5 digits",
@@ -38,13 +36,13 @@ $(document).ready(function() {
          selector: "span#cc_error",
          minError: "*min 13 digits",
          maxError: "*max 16 digits",
-         minLength: 13,
-         maxLength: 15
+         minLength: /^\d{0,12}$/,
+         maxLength: /^\d{17,}$/,
        },
 
        digitsOnly: /^\d*$/,
+       emptyString: /^$/,
        invalidCharacterMessage: "Digits only",
-       emptyString: /^$/
   }
 
   // takes 1 arg an object with 3 key/value pairs. Called on line 126
@@ -219,8 +217,11 @@ function checkRegisterForActivities() {
 
     if(isABoxChecked) {
      $("p#select-activity").hide();
+      return true;
     } else {
+
       return false;
+
     }
 
 
@@ -236,7 +237,7 @@ function checkBasicInput(objectBracketString, inputValue) {
 
     $(inputObj.selector).text(inputObj.emptyStringText);
 
-  } else if(!inputObj.invalid.test(inputValue)) {
+  } else if(!inputObj.regrex.test(inputValue)) {
 
     $(inputObj.selector).text(inputObj.invalidRegrex);
 
@@ -259,11 +260,11 @@ function checkCreditCard(string, inputValue) {
 
       $(creditObj.selector).text(regrexObj.invalidCharacterMessage);
 
-   } else if(inputValue.length < creditObj.minLength) {
+   } else if(creditObj.minLength.test(inputValue)) {
 
       $(creditObj.selector).text(creditObj.minError);
 
-   } else if (inputValue.length > creditObj.maxLength) {
+   } else if (creditObj.maxLength.test(inputValue)) {
 
       $(creditObj.selector).text(creditObj.maxError);
 
@@ -302,27 +303,51 @@ function checkZipAndCVV(string, inputValue) {
 
 }
 
+// displays overlay when form is submitting
+function displayOverlay() {
+  $("div.container").css({
+    opacity: .3,
+  });
+  $("div#submitted").show();
+}
+
+//https://stackoverflow.com/questions/31503637/page-reload-delay-after-submit-jsp
+function delay(){
+  $('form').submit(function(e){
+    e.preventDefault();
+    setTimeout(function(){window.location.reload(true);}, 1000);
+  });
+
+}
+
 //form submit
 $("button[type='submit']").on("click", function (event) {
 
   const isNameValid = checkBasicInput("name", $("input#name").val());
   const isEmailValid = checkBasicInput("email", $("input#mail").val());
   const isABoxChecked = checkRegisterForActivities();
+  let wasFormSubmitted = true
 
-  if(!isNameValid || !isEmailValid || isABoxChecked) {
+  if(!isNameValid || !isEmailValid || !isABoxChecked) {
              event.preventDefault();
+             wasFormSubmitted = false;
   }
 
- if($("select#payment option:selected")[0].index === 1) {
+  if($("select#payment option:selected")[0].index === 1) {
 
-   const isCreditValid = checkCreditCard("credit", $("input#cc-num").val());
-   const isZipValid = checkZipAndCVV("zipCode", $("input#zip").val());
-   const isCvvValid = checkZipAndCVV("cvv", $("input#cvv").val());
+    const isCreditValid = checkCreditCard("credit", $("input#cc-num").val());
+    const isZipValid = checkZipAndCVV("zipCode", $("input#zip").val());
+    const isCvvValid = checkZipAndCVV("cvv", $("input#cvv").val());
 
-      if(!isCreditValid || !isZipValid || !isCvvValid) {
-            event.preventDefault();
-      }
- }
+       if(!isCreditValid || !isZipValid || !isCvvValid) {
+             event.preventDefault();
+             wasFormSubmitted = false;
+       }
+  }
+
+  delay();
+  wasFormSubmitted ? displayOverlay() : null;
+
 
 });
 

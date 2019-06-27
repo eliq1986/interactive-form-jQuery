@@ -18,7 +18,7 @@ body {
 	background: #f0e7db;
 }
 
-header {
+header, h3 {
 	text-align: center;
 }
 
@@ -143,6 +143,16 @@ button:hover {
 	margin-top: 1.25em;
 }
 
+div#submitted {
+  width: auto;
+  position: absolute;
+  top: 50%;
+  left: 30%;
+  z-index: 2;
+  font-size: 2em;
+  display: none;
+
+}
 /* =================================
   Media Queries
 ==================================== */
