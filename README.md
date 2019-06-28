@@ -25,7 +25,8 @@ Enhanced a interactive registration form for a fictional conference utilizing po
 ## Extra Credit Features
 - T-Shirt select option is hidden until color is selected
 - Conditional messages appear with multiple inputs
--  Real time error messages that prevent user frustration
+- Real time error messages that prevent user frustration
+- Verification screen informing user of registration success 
 
 ![Screen Shot 2019-06-26 at 4 12 14 PM](https://user-images.githubusercontent.com/6277603/60221097-37e1b580-982d-11e9-92c1-a9920ca5a762.png)
 ![Screen Shot 2019-06-26 at 4 10 57 PM](https://user-images.githubusercontent.com/6277603/60221096-37e1b580-982d-11e9-9436-a59a734c8edf.png)
