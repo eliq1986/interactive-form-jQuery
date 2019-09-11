@@ -320,6 +320,15 @@ function delay(){
 
 }
 
+// takes no args; called inside form submit; scrolls window
+function scrollToTop() {
+  window.scroll({
+    top: 100,
+  left: 100,
+  behavior: 'smooth'
+});
+};
+
 //form submit
 $("button[type='submit']").on("click", function (event) {
 
@@ -347,6 +356,7 @@ $("button[type='submit']").on("click", function (event) {
 
   delay();
   wasFormSubmitted ? displayOverlay() : null;
+  scrollToTop();
 
 
 });
